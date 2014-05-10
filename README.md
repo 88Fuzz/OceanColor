@@ -1,0 +1,4 @@
+OceanColor
+==========
+
+Color averaging

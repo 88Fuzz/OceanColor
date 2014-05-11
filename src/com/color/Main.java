@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -23,47 +24,86 @@ public class Main extends GameWindow
 	
 	public static void main(String[] args)
 	{
-		new Main().run();
-	}
-	
+    if(args.length != 1)
+    {
+      Globals.cout("Usage: ./Main <random number seed>\n");
+    }
+    else
+    {
+      Globals.randGen=new Random(Long.parseLong(args[0]));
+      new Main().run();
+    }
+	} 
 	public void init()
 	{
 		int r=0,g=0,b=0;
+    int median=Globals.randGen.nextInt();
+    int blackCnt=0;
 		super.init();
 		Window window=device.getFullScreenWindow();
 		window.setFocusTraversalKeysEnabled(false);
 		
 		Globals.map=new Square[Globals.WIDTHMAP+1][Globals.HEIGHTMAP];
-		
+
+    if(median<0)
+      median*=-1;
+
+      int maxVal=1000;
+      median=Globals.randGen.nextInt(maxVal);
+
+      Globals.cout("median: "+median);
 		for(int x=0;x<=Globals.WIDTHMAP;x++)
 		{
 			for(int y=0;y<Globals.HEIGHTMAP;y++)
-			{
-				Globals.map[x][y]=new Square(x,y,0,0,0);//r,g,b);
-				/*b+=10;
-				if(b>255)
-				{
-					g+=10;
-					b=0;
-				}
-				
-				if(g>255)
-				{
-					r+=10;
-					g=0;
-				}
-				
-				if(r>255)
-					r=0;*/
+		  {
+
+      if(Globals.randGen.nextInt(maxVal)==median)
+      {
+      blackCnt++;
+        r=Globals.randGen.nextInt(256);
+        g=Globals.randGen.nextInt(256);
+        b=Globals.randGen.nextInt(256);
+      }
+      /*else if(Globals.randGen.nextInt(maxVal)>=90)
+      {
+        r=0xFF;
+        g=0xFF;
+        b=0xff;
+      }*/
+      else
+      {
+        r=0;
+        g=0;
+        b=0;
+      }
+/*        if(Globals.randGen.nextInt()>median)
+        {
+          r=Globals.randGen.nextInt(256);
+          g=Globals.randGen.nextInt(256);
+          b=Globals.randGen.nextInt(256);
+        }
+        else
+        {
+        blackCnt++;
+          r=0;
+          g=0;
+          b=0;
+        }*/
+
+				Globals.map[x][y]=new Square(x,y,r,g,b);
 			}
 		}
+
+
+    Globals.cout("black count: "+blackCnt);
+
 		
-		Globals.map[0][0]=new Square(30,30,0xFF,0xFF,0xFF);
+		//Globals.map[0][0]=new Square(30,30,0xFF,0xFF,0xFF);
 //		Globals.map[30][30]=new Square(30,30,0xFF,0xFF,0xFF);
 //		Globals.map[29][30]=new Square(30,30,0xFF,0xFF,0xFF);
 //		Globals.map[31][30]=new Square(30,30,0xFF,0xFF,0xFF);
 		
-		Globals.map[Globals.WIDTHMAP][Globals.HEIGHTMAP-1]=new Square(30,30,0xFF,0xFF,0xFF);
+		//Globals.map[Globals.WIDTHMAP][Globals.HEIGHTMAP-1]=new Square(30,30,0xFF,0xFF,0xFF);
 		//resize(Globals.WIDTH,Globals.HEIGHT);
 		//Globals.player=new Player(Globals.WIDTH/6, Globals.HEIGHT/6);
 //		Globals.mags=new ArrayList<Magnet>();/* {new Magnet(60, Globals.WIDTH/2, Globals.HEIGHT/2),
